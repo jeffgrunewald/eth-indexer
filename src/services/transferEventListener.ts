@@ -83,6 +83,19 @@ export class TransferEventListener {
   async start() {
     console.log('Starting transfer event listener...');
     
+    // Graceful shutdown
+    process.on('SIGTERM', async () => {
+      console.log('Killing transfer event listener...');
+      await this.stop();
+      process.exit(0);
+    });
+
+    process.on('SIGINT', async () => {
+      console.log('Stopping service...');
+      await this.stop();
+      process.exit(0);
+    });
+
     // Get the starting block number
     const latestSavedBlock = await getLatestSavedBlock(this.pool);
     const startBlockEnv = process.env.START_BLOCK_NUMBER ? Number(process.env.START_BLOCK_NUMBER) : null;
@@ -98,7 +111,6 @@ export class TransferEventListener {
       try {
         const block = await this.provider.getBlock(event.log.blockNumber);
         if (!block) throw new Error(`Block ${event.log.blockNumber} not found`);
-        console.log(event.log)
         
         await insertTransferEvent(this.pool, {
           from,
@@ -120,4 +132,4 @@ export class TransferEventListener {
     this.contract.removeAllListeners();
     await this.pool.end();
   }
-} 
+}
