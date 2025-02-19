@@ -9,6 +9,7 @@ import {
   getLatestSavedBlock
 } from '../queries';
 import { TransferEvent } from '../../types';
+import { createSampleEvents } from '../../test/utils';
 
 dotenv.config();
 
@@ -37,15 +38,7 @@ describe('Database Queries', () => {
   });
 
   it('should insert and retrieve transfer events', async () => {
-    // Create sample events
-    const sampleEvents: TransferEvent[] = Array.from({ length: 12 }, (_, i) => ({
-      from: `0x${(i + 1).toString().padStart(40, '0')}`,
-      to: `0x${(i + 2).toString().padStart(40, '0')}`,
-      value: BigInt((i + 1) * 10000000),
-      transactionHash: `0x${(i + 1).toString().padStart(64, '0')}`,
-      blockNumber: 1000000 + i,
-      timestamp: Math.floor(Date.now() / 1000) - (i * 3600) // Each event 1 hour apart
-    }));
+    const sampleEvents = createSampleEvents(12);
 
     // Insert all events
     for (const event of sampleEvents) {
