@@ -1,11 +1,14 @@
 import { createServer } from 'http'
+import fs from 'fs';
 import { parse } from 'url'
 import next from 'next'
+import path from 'path';
+import { Pool } from 'pg';
 import { TransferEventListener } from './services/transferEventListener'
 
 const dev = process.env.NODE_ENV !== 'production'
-const hostname = 'localhost'
-const port = 3000
+const hostname = process.env.HOSTNAME || 'localhost'
+const port = Number(process.env.PORT) || 3000
 
 // Initialize Next.js
 const app = next({ dev, hostname, port })
@@ -13,6 +16,9 @@ const handle = app.getRequestHandler()
 
 async function main() {
   try {
+    // Ensure the database is setup; migration is idempotent
+    await setup_db()
+
     // Initialize Next.js
     await app.prepare()
 
@@ -63,4 +69,17 @@ async function main() {
   }
 }
 
-main() 
+async function setup_db() {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+  });
+
+  // Run schema migration
+  const schemaSQL = fs.readFileSync(
+    path.join(__dirname, '../db/schema.sql'),
+    'utf8'
+  );
+  await pool.query(schemaSQL);
+}
+
+main()

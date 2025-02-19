@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "ts-node src/server.ts",
-    "build": "next build",
-    "start": "ts-node src/server.ts",
+    "build:next": "next build",
+    "build:server": "tsc --project tsconfig.server.json",
+    "build": "npm run build:next && npm run build:server",
+    "start": "node dist/server.js",
     "lint": "next lint",
     "indexer": "ts-node src/scripts/startEventListener.ts",
     "test": "jest --detectOpenHandles",
