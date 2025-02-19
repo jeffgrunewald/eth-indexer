@@ -6,7 +6,8 @@ import {
   insertTransferEvent,
   getTransferEvents,
   getTransferStats,
-  getLatestSavedBlock
+  getLatestSavedBlock,
+  get100thLatestSavedBlock
 } from '../../src/db/queries';
 import { createSampleEvents } from '../utils/testHelpers';
 
@@ -87,5 +88,22 @@ describe('Database Queries', () => {
     
     expect(typeof latestBlock).toBe('number');
     expect(latestBlock).toBe(1000011); // Should be the highest block number from sample data
+  });
+
+  it('should get 100th latest block', async () => {
+    // Insert 150 events with different block numbers
+    for (let i = 1000; i < 1150; i++) {
+      await insertTransferEvent(pool, {
+        from: '0x1234...',
+        to: '0x5678...',
+        value: BigInt(1000000),
+        transactionHash: `0x${i}`,
+        blockNumber: i,
+        timestamp: Math.floor(Date.now() / 1000)
+      });
+    }
+
+    const block = await get100thLatestSavedBlock(pool);
+    expect(block).toBe(1062); // 1161 - 99 = 1062 (100th latest block after previous test inserts)
   });
 }); 

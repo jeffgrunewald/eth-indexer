@@ -100,13 +100,6 @@ export default async function handler(
       pageSize = '100'
     } = req.query as Record<string, string>;
 
-    // Validate that at least one address filter is provided
-    if (!from && !to) {
-      return res.status(400).json({
-        error: 'At least one of "from" or "to" parameters must be provided'
-      });
-    }
-
     const result = await getTransferEvents(
       pool,
       {

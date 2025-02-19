@@ -48,7 +48,13 @@ export async function getTransferEvents(
     paramCount++;
   }
 
-  if (queryParams.startBlock) {
+  // If no specific filters are set, use 100th latest block as default start
+  if (!queryParams.from && !queryParams.to && !queryParams.startBlock) {
+    const defaultStartBlock = await get100thLatestSavedBlock(pool) || 0;
+    conditions.push(`block_number >= $${paramCount}`);
+    params.push(defaultStartBlock);
+    paramCount++;
+  } else if (queryParams.startBlock) {
     conditions.push(`block_number >= $${paramCount}`);
     params.push(queryParams.startBlock);
     paramCount++;
@@ -119,9 +125,22 @@ export async function getTransferStats(pool: Pool): Promise<TransferStats> {
 
 export async function getLatestSavedBlock(pool: Pool): Promise<number | null> {
   const result = await pool.query<{ latest_block: string }>(`
-    SELECT MAX(block_number) as latest_block
+    SELECT MAX(block_number) AS latest_block
     FROM transfer_events
   `);
   
   return result.rows[0].latest_block ? Number(result.rows[0].latest_block) : null;
+}
+
+export async function get100thLatestSavedBlock(pool: Pool): Promise<number | null> {
+  const result = await pool.query<{ block_number: string }>(`
+    SELECT block_number
+    FROM transfer_events
+    GROUP BY block_number
+    ORDER BY block_number DESC
+    OFFSET 99
+    LIMIT 1
+  `);
+
+  return result.rows[0]?.block_number ? Number(result.rows[0].block_number) : null;
 } 

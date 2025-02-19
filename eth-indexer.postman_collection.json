@@ -1,42 +1,53 @@
 {
   "info": {
     "name": "ETH Indexer API",
+    "description": "Collection for testing the ERC-20 Transfer Event Indexer API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
       "name": "Get Transfer Events",
+      "description": "Returns paginated transfer events. If no filters specified, returns events from the 100th most recent block onwards.",
       "request": {
         "method": "GET",
         "url": {
-          "raw": "http://localhost:3000/api/events?page=1&pageSize=10",
+          "raw": "http://localhost:3000/api/events",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "events"],
           "query": [
             {
               "key": "page",
-              "value": "1"
+              "value": "1",
+              "description": "Page number"
             },
             {
               "key": "pageSize",
-              "value": "10"
+              "value": "10",
+              "description": "Number of items per page"
             },
             {
               "key": "from",
               "value": "0x1234...",
+              "description": "Filter by sender address",
               "disabled": true
             },
             {
               "key": "to",
               "value": "0x5678...",
+              "description": "Filter by recipient address",
               "disabled": true
             },
             {
               "key": "startBlock",
               "value": "1000000",
+              "description": "Filter by starting block number",
               "disabled": true
             },
             {
               "key": "endBlock",
               "value": "1000100",
+              "description": "Filter by ending block number",
               "disabled": true
             }
           ]
@@ -45,9 +56,15 @@
     },
     {
       "name": "Get Transfer Stats",
+      "description": "Returns aggregate statistics about all indexed transfer events",
       "request": {
         "method": "GET",
-        "url": "http://localhost:3000/api/stats"
+        "url": {
+          "raw": "http://localhost:3000/api/stats",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "stats"]
+        }
       }
     }
   ]

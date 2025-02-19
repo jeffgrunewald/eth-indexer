@@ -58,6 +58,10 @@ docker-compose down
 docker volume rm eth-indexer_db-data
 ```
 
+## Once Up and Running
+
+With the "production" stack of indexer and database running together, the easiest way to see it in action is to open the Swagger UI at [http://localhost:3000/api-docs](http://localhost:3000/api-docs). The query parameters for the `GET /api/events` endpoint are designed to be forgiving with reasonable defaults and the `GET /api/stats` endpoint will provide a summary of the latest data, including the timestamp of the latest indexed event which should indicate things are still rolling even if you're not following the logs. The provided Postman collection in the project root can also be used and there's always good old fashioned `curl` for the terminal purist.
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
