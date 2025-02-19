@@ -16,9 +16,7 @@ async function main() {
     // Initialize Next.js
     await app.prepare()
 
-    // Start the event listener
     const listener = new TransferEventListener()
-    await listener.start()
 
     // Create server
     const server = createServer(async (req, res) => {
@@ -33,9 +31,16 @@ async function main() {
     })
 
     // Handle graceful shutdown
+    process.on('SIGINT', async () => {
+      console.log('SIGINT signal received. Stopping server...')
+      server.close(() => {
+        console.log('Server closed')
+        process.exit(0)
+      })
+    })
+
     process.on('SIGTERM', async () => {
-      console.log('SIGTERM signal received. Closing server...')
-      await listener.stop()
+      console.log('SIGTERM signal received. Killing server...')
       server.close(() => {
         console.log('Server closed')
         process.exit(0)
@@ -49,6 +54,9 @@ async function main() {
         }`
       )
     })
+
+    // Start the event listener
+    await listener.start()
   } catch (err) {
     console.error('Error starting server:', err)
     process.exit(1)

@@ -91,7 +91,7 @@ export class TransferEventListener {
     });
 
     process.on('SIGINT', async () => {
-      console.log('Stopping service...');
+      console.log('Stopping transfer event listener...');
       await this.stop();
       process.exit(0);
     });
