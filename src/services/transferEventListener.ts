@@ -31,14 +31,6 @@ const ERC20_ABI = [
   },
 ];
 
-interface TransferEvent {
-  from: string;
-  to: string;
-  value: bigint;
-  transactionHash: string;
-  blockNumber: number;
-}
-
 export class TransferEventListener {
   private provider: ethers.JsonRpcProvider;
   private contract: ethers.Contract;
@@ -102,21 +94,22 @@ export class TransferEventListener {
     }
 
     console.log('Setting up live event listener...');
-    this.contract.on("Transfer", async (from: string, to: string, value: bigint, event: ethers.EventLog) => {
+    this.contract.on("Transfer", async (from: string, to: string, value: bigint, event: ethers.ContractEventPayload) => {
       try {
-        const block = await this.provider.getBlock(event.blockNumber);
-        if (!block) throw new Error(`Block ${event.blockNumber} not found`);
+        const block = await this.provider.getBlock(event.log.blockNumber);
+        if (!block) throw new Error(`Block ${event.log.blockNumber} not found`);
+        console.log(event.log)
         
         await insertTransferEvent(this.pool, {
           from,
           to,
           value,
-          transactionHash: event.transactionHash,
-          blockNumber: event.blockNumber,
+          transactionHash: event.log.transactionHash,
+          blockNumber: event.log.blockNumber,
           timestamp: block.timestamp
         });
 
-        console.log(`Saved transfer event: ${event.transactionHash}`);
+        console.log(`Saved transfer event: ${event.log.transactionHash}`);
       } catch (error) {
         console.error('Error processing transfer event:', error);
       }

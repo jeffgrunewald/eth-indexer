@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "ts-node src/server.ts",
+    "start": "next start",
     "lint": "next lint",
     "indexer": "ts-node src/scripts/startEventListener.ts",
     "test": "jest --detectOpenHandles",

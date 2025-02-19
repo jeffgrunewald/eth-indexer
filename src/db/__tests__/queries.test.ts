@@ -8,7 +8,6 @@ import {
   getTransferStats,
   getLatestSavedBlock
 } from '../queries';
-import { TransferEvent } from '../../types';
 import { createSampleEvents } from '../../test/utils';
 
 dotenv.config();

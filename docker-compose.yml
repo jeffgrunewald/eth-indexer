@@ -12,7 +12,7 @@ services:
       DATABASE_URL: postgres://indexer:indexer@postgres:5432/eth_indexer
       ERC20_CONTRACT_ADDRESS: 0x1c7d4b196cb0c7b01d743fbc6116a902379c7238
       SEPOLIA_RPC_URL: ${INDEXER_RPC_URL}
-      START_BLOCK_NUMBER: 7735000
+      START_BLOCK_NUMBER: 7738800
 
   postgres:
     image: postgres:latest
