@@ -1,0 +1,54 @@
+{
+  "info": {
+    "name": "ETH Indexer API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Transfer Events",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/events?page=1&pageSize=10",
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "pageSize",
+              "value": "10"
+            },
+            {
+              "key": "from",
+              "value": "0x1234...",
+              "disabled": true
+            },
+            {
+              "key": "to",
+              "value": "0x5678...",
+              "disabled": true
+            },
+            {
+              "key": "startBlock",
+              "value": "1000000",
+              "disabled": true
+            },
+            {
+              "key": "endBlock",
+              "value": "1000100",
+              "disabled": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Transfer Stats",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/stats"
+      }
+    }
+  ]
+} 
