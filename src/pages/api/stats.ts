@@ -13,11 +13,12 @@ const pool = new Pool({
  * @swagger
  * /api/stats:
  *   get:
+ *     tags: [Stats]
  *     summary: Get transfer statistics
  *     description: Retrieve aggregate statistics about transfer events
  *     responses:
  *       200:
- *         description: Successful response
+ *         description: Success
  *         content:
  *           application/json:
  *             schema:

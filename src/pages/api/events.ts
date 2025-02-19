@@ -13,50 +13,45 @@ const pool = new Pool({
  * @swagger
  * /api/events:
  *   get:
+ *     tags: [Events]
  *     summary: Get transfer events
  *     description: Retrieve paginated transfer events with optional filtering
  *     parameters:
- *       - name: from
- *         in: query
+ *       - in: query
+ *         name: from
+ *         schema:
+ *           type: string
  *         description: Filter by sender address
- *         required: false
+ *       - in: query
+ *         name: to
  *         schema:
  *           type: string
- *       - name: to
- *         in: query
  *         description: Filter by recipient address
- *         required: false
+ *       - in: query
+ *         name: startBlock
  *         schema:
- *           type: string
- *       - name: startBlock
- *         in: query
+ *           type: integer
  *         description: Filter by minimum block number
- *         required: false
+ *       - in: query
+ *         name: endBlock
  *         schema:
  *           type: integer
- *       - name: endBlock
- *         in: query
  *         description: Filter by maximum block number
- *         required: false
- *         schema:
- *           type: integer
- *       - name: page
- *         in: query
- *         description: Page number (default: 1)
- *         required: false
+ *       - in: query
+ *         name: page
  *         schema:
  *           type: integer
  *           default: 1
- *       - name: pageSize
- *         in: query
- *         description: Number of items per page (default: 100)
- *         required: false
+ *         description: Page number
+ *       - in: query
+ *         name: pageSize
  *         schema:
  *           type: integer
  *           default: 100
+ *         description: Number of items per page
  *     responses:
  *       200:
- *         description: Successful response
+ *         description: Success
  *         content:
  *           application/json:
  *             schema:
@@ -67,7 +62,16 @@ const pool = new Pool({
  *                   items:
  *                     $ref: '#/components/schemas/TransferEvent'
  *                 pagination:
- *                   $ref: '#/components/schemas/Pagination'
+ *                   type: object
+ *                   properties:
+ *                     currentPage:
+ *                       type: integer
+ *                     pageSize:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     totalItems:
+ *                       type: integer
  *       400:
  *         description: Bad request - Missing required filters
  *         content:
