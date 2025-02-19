@@ -1,13 +1,13 @@
 import { createMocks } from 'node-mocks-http';
 import { Pool } from 'pg';
-import eventsHandler from '../events';
-import statsHandler from '../stats';
-import { insertTransferEvent } from '../../../db/queries';
-import { TransferEvent } from '../../../types';
+import eventsHandler from '../../src/pages/api/events';
+import statsHandler from '../../src/pages/api/stats';
+import { insertTransferEvent } from '../../src/db/queries';
+import { TransferEvent } from '../../src/types';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
-import { createSampleEvents } from '../../../test/utils';
+import { createSampleEvents } from '../utils/testHelpers';
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ describe('API Endpoints', () => {
 
     // Run schema migration
     const schemaSQL = fs.readFileSync(
-      path.join(__dirname, '../../../../db/schema.sql'),
+      path.join(__dirname, '../../db/schema.sql'),
       'utf8'
     );
     await pool.query(schemaSQL);

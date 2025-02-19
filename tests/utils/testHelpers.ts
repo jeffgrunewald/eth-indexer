@@ -1,4 +1,4 @@
-import { TransferEvent } from '../types';
+import { TransferEvent } from '../../src/types';
 
 export function createSampleEvents(count: number): TransferEvent[] {
   return Array.from({ length: count }, (_, i) => ({

@@ -7,8 +7,8 @@ import {
   getTransferEvents,
   getTransferStats,
   getLatestSavedBlock
-} from '../queries';
-import { createSampleEvents } from '../../test/utils';
+} from '../../src/db/queries';
+import { createSampleEvents } from '../utils/testHelpers';
 
 dotenv.config();
 
@@ -23,7 +23,7 @@ describe('Database Queries', () => {
 
     // Run schema migration
     const schemaSQL = fs.readFileSync(
-      path.join(__dirname, '../../../db/schema.sql'),
+      path.join(__dirname, '../../db/schema.sql'),
       'utf8'
     );
     await pool.query(schemaSQL);
