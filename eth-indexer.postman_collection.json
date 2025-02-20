@@ -28,25 +28,25 @@
             },
             {
               "key": "from",
-              "value": "0x1234...",
+              "value": "0x1234...REPLACE WITH VALID ADDRESS",
               "description": "Filter by sender address",
               "disabled": true
             },
             {
               "key": "to",
-              "value": "0x5678...",
+              "value": "0x5678...REPLACE WITH VALID ADDRESS",
               "description": "Filter by recipient address",
               "disabled": true
             },
             {
               "key": "startBlock",
-              "value": "1000000",
+              "value": "1000000...REPLACE WITH VALID BLOCK NUMBER",
               "description": "Filter by starting block number",
               "disabled": true
             },
             {
               "key": "endBlock",
-              "value": "1000100",
+              "value": "1000100...REPLACE WITH VALID BLOCK NUMBER",
               "description": "Filter by ending block number",
               "disabled": true
             }
