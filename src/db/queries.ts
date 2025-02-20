@@ -119,7 +119,8 @@ export async function getTransferStats(pool: Pool): Promise<TransferStats> {
   return {
     totalEvents: parseInt(stats.total_events),
     totalTransferred: stats.total_transferred,
-    lastEventAt: stats.last_event_at
+    lastEventAt: stats.last_event_at,
+    refreshedAt: stats.last_event_at,
   };
 }
 

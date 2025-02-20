@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { getTransferEvents } from '../../db/queries';
+import { rateLimiter } from '../../middleware/rateLimiter';
 
 dotenv.config();
 
@@ -87,37 +88,39 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
-  try {
-    const {
-      from,
-      to,
-      startBlock,
-      endBlock,
-      page = '1',
-      pageSize = '100'
-    } = req.query as Record<string, string>;
-
-    const result = await getTransferEvents(
-      pool,
-      {
+  rateLimiter(req, res, async () => {
+    try {
+      const {
         from,
         to,
-        startBlock: startBlock ? parseInt(startBlock) : undefined,
-        endBlock: endBlock ? parseInt(endBlock) : undefined,
-      },
-      {
-        page: parseInt(page),
-        pageSize: parseInt(pageSize)
-      }
-    );
+        startBlock,
+        endBlock,
+        page = '1',
+        pageSize = '100'
+      } = req.query as Record<string, string>;
 
-    return res.status(200).json(result);
+      const result = await getTransferEvents(
+        pool,
+        {
+          from,
+          to,
+          startBlock: startBlock ? parseInt(startBlock) : undefined,
+          endBlock: endBlock ? parseInt(endBlock) : undefined,
+        },
+        {
+          page: parseInt(page),
+          pageSize: parseInt(pageSize)
+        }
+      );
 
-  } catch (error) {
-    console.error('Error fetching transfer events:', error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
+      return res.status(200).json(result);
+    } catch (error) {
+      console.error('Error handling request:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 } 

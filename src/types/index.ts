@@ -12,6 +12,7 @@ export interface TransferStats {
   totalEvents: number;
   totalTransferred: string;
   lastEventAt: Date;
+  refreshedAt: Date;
 }
 
 export interface PaginationParams {

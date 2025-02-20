@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { getTransferStats } from '../../db/queries';
+import { withStatsCache } from '../../middleware/statsCache';
 
 dotenv.config();
 
@@ -29,11 +30,13 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
   try {
-    const stats = await getTransferStats(pool);
+    const stats = await withStatsCache(() => getTransferStats(pool));
+    res.setHeader('Cache-Control', 'public, max-age=5');
     return res.status(200).json(stats);
   } catch (error) {
     console.error('Error fetching transfer stats:', error);

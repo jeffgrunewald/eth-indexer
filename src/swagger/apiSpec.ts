@@ -104,7 +104,7 @@ export default {
     "/api/events": {
       get: {
         summary: "Get paginated transfer events",
-        description: "Returns paginated transfer events. If no filters are specified, returns events from the 100th most recent block onwards.",
+        description: "Returns paginated transfer events. If no filters specified, returns events for the 100 most recent blocks. Rate limited to 1 request per token up to a maximum of 10 tokens for a sustained request / second limit of 1.",
         parameters: [
           {
             name: "from",
@@ -152,6 +152,20 @@ export default {
         responses: {
           "200": {
             description: "Successful response with paginated transfer events",
+            headers: {
+              "X-RateLimit-Limit": {
+                schema: { type: "integer" },
+                description: "Maximum number of requests allowed per bucket"
+              },
+              "X-RateLimit-Remaining": {
+                schema: { type: "integer" },
+                description: "Number of requests remaining in the bucket"
+              },
+              "X-RateLimit-Reset": {
+                schema: { type: "integer" },
+                description: "Time in seconds until rate limit bucket refreshes"
+              }
+            },
             content: {
               "application/json": {
                 schema: {
@@ -162,6 +176,37 @@ export default {
                       items: { "$ref": "#/components/schemas/TransferEvent" }
                     },
                     pagination: { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            description: "Too Many Requests - Rate limit exceeded",
+            headers: {
+              "X-RateLimit-Limit": {
+                schema: { type: "integer" }
+              },
+              "X-RateLimit-Remaining": {
+                schema: { type: "integer" }
+              },
+              "X-RateLimit-Reset": {
+                schema: { type: "integer" }
+              }
+            },
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                      example: "Too Many Requests"
+                    },
+                    message: {
+                      type: "string",
+                      example: "Rate limit exceeded. Try again in 1 second"
+                    }
                   }
                 }
               }
