@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { insertTransferEvent, getLatestSavedBlock } from '../db/queries';
+import { transferEmitter } from './eventEmitter';
 
 dotenv.config();
 
@@ -121,14 +122,17 @@ export class TransferEventListener {
         const block = await this.provider.getBlock(event.log.blockNumber);
         if (!block) throw new Error(`Block ${event.log.blockNumber} not found`);
 
-        await insertTransferEvent(this.pool, {
+        const transferEvent = {
           from,
           to,
           value,
           transactionHash: event.log.transactionHash,
           blockNumber: event.log.blockNumber,
           timestamp: block.timestamp
-        });
+        };
+
+        await insertTransferEvent(this.pool, transferEvent);
+        transferEmitter.emitTransfer(transferEvent);
 
         console.log(`Saved transfer event: ${event.log.transactionHash}`);
       } catch (error) {

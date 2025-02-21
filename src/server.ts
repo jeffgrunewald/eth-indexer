@@ -5,6 +5,7 @@ import next from 'next'
 import path from 'path';
 import { Pool } from 'pg';
 import { TransferEventListener } from './services/transferEventListener'
+import { setupWebSocketServer } from './pages/api/ws';
 
 const dev = process.env.NODE_ENV !== 'production'
 const hostname = process.env.HOSTNAME || 'localhost'
@@ -35,6 +36,9 @@ async function main() {
         res.end('internal server error')
       }
     })
+
+    // Setup WebSocket server
+    setupWebSocketServer(server);
 
     // Handle graceful shutdown
     process.on('SIGINT', async () => {
